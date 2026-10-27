@@ -1,0 +1,82 @@
+# Entity: health
+
+main: kit: entity: health: {
+
+  alias: field: {}
+
+  fields: {
+    checks: {
+      h: "Checks"
+      n: "checks"
+      r: false
+      sh: "Per-dependency checks."
+      t: "`$OBJECT`"
+    }
+    ok: {
+      h: "Ok"
+      n: "ok"
+      r: true
+      sh: "Overall health."
+      t: "`$BOOLEAN`"
+    }
+    service: {
+      h: "Service"
+      n: "service"
+      r: false
+      sh: "Service name; observed \"autopay\"."
+      t: "`$STRING`"
+    }
+    status: {
+      h: "Status"
+      n: "status"
+      r: true
+      sh: "Overall status; observed \"ok\"."
+      t: "`$STRING`"
+    }
+    ts: {
+      fo: "int64"
+      h: "Ts"
+      n: "ts"
+      r: false
+      sh: "Server time of the check, epoch milliseconds."
+      t: "`$INTEGER`"
+    }
+  }
+
+  name: "health"
+  op: {
+    load: {
+      name: "load"
+      points: [
+        {
+          co: {
+            id: "GET /api/health"
+            source: "openapi3"
+            version: 2
+          }
+          m: "GET"
+          o: "/api/health"
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
+          s: [
+            {
+              lit: "api"
+            }
+            {
+              lit: "health"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body`"
+          }
+        }
+      ]
+    }
+  }
+
+
+
+}

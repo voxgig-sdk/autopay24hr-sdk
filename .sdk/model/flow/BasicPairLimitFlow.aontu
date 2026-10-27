@@ -1,0 +1,28 @@
+# BasicPairLimitFlow
+
+main: kit: flow: BasicPairLimitFlow:
+{
+  entity: "pair_limit",
+  kind: "basic",
+  name: "BasicPairLimitFlow",
+  step: [
+    {
+      i: {
+        ref: "pair_limit_ref01",
+        srcdatavar: "pair_limit_ref01_data",
+        suffix: "_dt0"
+      }
+
+      o: "load",
+      v: [
+        {
+          apply: "TextFieldMark",
+          def: {
+            mark: "Mark01-pair_limit_ref01"
+          }
+        }
+      ]
+    }
+  ],
+  "key$": "BasicPairLimitFlow"
+}

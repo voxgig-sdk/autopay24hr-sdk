@@ -1,0 +1,77 @@
+# Entity: coin
+
+main: kit: entity: coin: {
+
+  alias: field: {}
+
+  fields: {
+    decimals: {
+      h: "Decimals"
+      n: "decimals"
+      r: true
+      sh: "Decimal places of the asset on this network."
+      t: "`$INTEGER`"
+    }
+    network: {
+      h: "Network"
+      n: "network"
+      r: true
+      sh: "Network slug, e.g."
+      t: "`$STRING`"
+    }
+    providers: {
+      h: "Providers"
+      n: "providers"
+      r: true
+      sh: "Providers that route this asset; only \"autopay\" was observed."
+      t: "`$ARRAY`"
+    }
+    symbol: {
+      h: "Symbol"
+      n: "symbol"
+      r: true
+      sh: "Ticker symbol, e.g."
+      t: "`$STRING`"
+    }
+  }
+
+  name: "coin"
+  op: {
+    list: {
+      name: "list"
+      points: [
+        {
+          co: {
+            id: "GET /api/v1/coins"
+            source: "openapi3"
+            version: 2
+          }
+          m: "GET"
+          o: "/api/v1/coins"
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
+          s: [
+            {
+              lit: "api"
+            }
+            {
+              lit: "v1"
+            }
+            {
+              lit: "coins"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body.coins`"
+          }
+        }
+      ]
+    }
+  }
+
+
+
+}

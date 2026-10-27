@@ -1,0 +1,56 @@
+{
+  "existing": {
+    "pair_limit": {
+      "PAIR_LIMIT00": {
+        "fromNetwork": "s46",
+        "fromSymbol": "s47",
+        "maxAmount": 72,
+        "maxUsdApprox": 73,
+        "minAmount": 74,
+        "minNetReceive": 75,
+        "minUsdApprox": 76,
+        "id": "PAIR_LIMIT00"
+      },
+      "PAIR_LIMIT01": {
+        "fromNetwork": "s8c",
+        "fromSymbol": "s8d",
+        "maxAmount": 142,
+        "maxUsdApprox": 143,
+        "minAmount": 144,
+        "minNetReceive": 145,
+        "minUsdApprox": 146,
+        "id": "PAIR_LIMIT01"
+      },
+      "PAIR_LIMIT02": {
+        "fromNetwork": "sd2",
+        "fromSymbol": "sd3",
+        "maxAmount": 212,
+        "maxUsdApprox": 213,
+        "minAmount": 214,
+        "minNetReceive": 215,
+        "minUsdApprox": 216,
+        "id": "PAIR_LIMIT02"
+      }
+    }
+  },
+  "new": {
+    "pair_limit": {
+      "pair_limit_ref01": {
+        "fromNetwork": "s118",
+        "fromSymbol": "s119",
+        "maxAmount": 282,
+        "maxUsdApprox": 283,
+        "minAmount": 284,
+        "minNetReceive": 285,
+        "minUsdApprox": 286
+      }
+    }
+  },
+  "requests": {
+    "GET /api/v1/pair-limits": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

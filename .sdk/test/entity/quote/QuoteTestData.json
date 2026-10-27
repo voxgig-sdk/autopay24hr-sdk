@@ -1,0 +1,73 @@
+{
+  "existing": {
+    "quote": {
+      "QUOTE00": {
+        "estimatedTime": "s78",
+        "estimatedTimeTier": "s79",
+        "fromAmount": 122,
+        "grossToAmount": 123,
+        "isBest": true,
+        "maxAmount": 125,
+        "minAmount": 126,
+        "netToAmount": 127,
+        "networkFee": 128,
+        "providerFeePercent": 129,
+        "providerName": "s82",
+        "spreadPercent": 131
+      },
+      "QUOTE01": {
+        "estimatedTime": "sf0",
+        "estimatedTimeTier": "sf1",
+        "fromAmount": 242,
+        "grossToAmount": 243,
+        "isBest": true,
+        "maxAmount": 245,
+        "minAmount": 246,
+        "netToAmount": 247,
+        "networkFee": 248,
+        "providerFeePercent": 249,
+        "providerName": "sfa",
+        "spreadPercent": 251
+      },
+      "QUOTE02": {
+        "estimatedTime": "s168",
+        "estimatedTimeTier": "s169",
+        "fromAmount": 362,
+        "grossToAmount": 363,
+        "isBest": true,
+        "maxAmount": 365,
+        "minAmount": 366,
+        "netToAmount": 367,
+        "networkFee": 368,
+        "providerFeePercent": 369,
+        "providerName": "s172",
+        "spreadPercent": 371
+      }
+    }
+  },
+  "new": {
+    "quote": {
+      "quote_ref01": {
+        "estimatedTime": "s1e0",
+        "estimatedTimeTier": "s1e1",
+        "fromAmount": 482,
+        "grossToAmount": 483,
+        "isBest": true,
+        "maxAmount": 485,
+        "minAmount": 486,
+        "netToAmount": 487,
+        "networkFee": 488,
+        "providerFeePercent": 489,
+        "providerName": "s1ea",
+        "spreadPercent": 491
+      }
+    }
+  },
+  "requests": {
+    "GET /api/v1/quote": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+# BasicChatStatusFlow
+
+main: kit: flow: BasicChatStatusFlow:
+{
+  entity: "chat_status",
+  kind: "basic",
+  name: "BasicChatStatusFlow",
+  step: [
+    {
+      i: {
+        ref: "chat_status_ref01",
+        srcdatavar: "chat_status_ref01_data",
+        suffix: "_dt0"
+      }
+
+      o: "load",
+      v: [
+        {
+          apply: "TextFieldMark",
+          def: {
+            mark: "Mark01-chat_status_ref01"
+          }
+        }
+      ]
+    }
+  ],
+  "key$": "BasicChatStatusFlow"
+}

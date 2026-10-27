@@ -1,0 +1,25 @@
+# API Information
+
+
+main: {
+  kit: {
+    info: {
+      auth: false
+      contact: {
+        url: "https://autopay24hr.com/api-docs"
+      }
+      description: "Public, keyless JSON API of AutoPay24hr, a non-KYC crypto swap service. CORS open, HTTPS only. Knowledge source: the documentation page https://autopay24hr.com/api-docs, with every endpoint below probed live on 2026-10-25. This spec deliberately covers only the read-only GET endpoints that work without creating anything: the coin list, pair limits, quotes, chat status and the health check. Left out on purpose: POST /api/v1/order (creates a real swap order with a deposit address), GET /api/v1/order/{id} (needs an order id that only a create returns), POST /api/v1/chat and the WebSocket /ws/order/{id}. Rate limit: anonymous callers get 60 requests per minute per IP (documented, and confirmed by x-ratelimit-limit: 60 / x-ratelimit-reset: 60 response headers). Observed but not documented: pair-limits also returns minNetReceive; quotes also return savePercentVsWorst, minAmount, maxAmount, isEstimate, estimatedTimeTier, cachedAt and expiresAt (epoch milliseconds, quotes are cached for 120 s), a routes array, targetNetToAmount in receive mode, and extra fields on each route; health also returns service, per-check latencyMs and ts. The docs say errors are {\"error\": {\"code\", \"message\"}}; the live API instead returns error as a string code, with message, issues (validation details) or minAmount/maxAmount alongside: 400 invalid_request for missing parameters, 400 amount_too_low below the route minimum, 404 no_route for an unsupported pair. Unverified: the 429 rate_limited response body, the full value sets of estimatedTimeTier and providerName, whether a quote can return more than one route, and whether chat status model is null when AI is not configured."
+      servers: [
+        {
+          description: "Production server"
+          url: "https://autopay24hr.com"
+        }
+      ]
+      summary: "Public, keyless JSON API of AutoPay24hr, a non-KYC crypto swap service."
+      title: "AutoPay24hr API"
+      version: "1.0.0"
+      website: "https://autopay24hr.com"
+    }
+  }
+}
+

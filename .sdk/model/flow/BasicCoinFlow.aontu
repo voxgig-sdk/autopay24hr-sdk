@@ -1,0 +1,22 @@
+# BasicCoinFlow
+
+main: kit: flow: BasicCoinFlow:
+{
+  entity: "coin",
+  kind: "basic",
+  name: "BasicCoinFlow",
+  step: [
+    {
+      o: "list",
+      v: [
+        {
+          apply: "ItemExists",
+          def: {
+            ref: "coin_ref01"
+          }
+        }
+      ]
+    }
+  ],
+  "key$": "BasicCoinFlow"
+}

@@ -1,0 +1,40 @@
+{
+  "files": [
+    "SUMMARY.md"
+  ],
+  "config": ".sdk/doc/qa/vale.ini",
+  "routes": {},
+  "quoted": {
+    "SUMMARY.md": [
+      "AI model in use, for example &quot;anthropic/claude-haiku-4.5&quot;. Nullability when AI is off is unverified.",
+      "Amount of the destination coin before the spread.",
+      "Amount to send: the request fromAmount in send mode, computed in receive mode.",
+      "Approximate USD value of maxAmount.",
+      "Decimal places of the asset on this network.",
+      "Human-readable completion estimate, for example &quot;15–45 min&quot; (uses an en dash).",
+      "Maximum send amount.",
+      "Minimum send amount.",
+      "Network slug, for example &quot;bitcoin&quot;, &quot;ethereum&quot;, &quot;tron&quot;, &quot;solana&quot;, &quot;bsc&quot;.",
+      "Overall health.",
+      "Overall status; observed &quot;ok&quot;.",
+      "Per-dependency checks.",
+      "Production server",
+      "Providers that route this asset; only &quot;autopay&quot; was observed.",
+      "Public, keyless JSON API of AutoPay24hr, a non-KYC crypto swap service. CORS open, HTTPS only. Knowledge source: the documentation page https://autopay24hr.com/api-docs, with every endpoint below probed live on 2026-10-25. This spec deliberately covers only the read-only GET endpoints that work without creating anything: the coin list, pair limits, quotes, chat status and the health check. Left out on purpose: POST /api/v1/order (creates a real swap order with a deposit address), GET /api/v1/order/&#123;id&#125; (needs an order id that only a create returns), POST /api/v1/chat and the WebSocket /ws/order/&#123;id&#125;. Rate limit: anonymous callers get 60 requests per minute per IP (documented, and confirmed by x-ratelimit-limit: 60 / x-ratelimit-reset: 60 response headers). Observed but not documented: pair-limits also returns minNetReceive; quotes also return savePercentVsWorst, minAmount, maxAmount, isEstimate, estimatedTimeTier, cachedAt and expiresAt (epoch milliseconds, quotes are cached for 120 s), a routes array, targetNetToAmount in receive mode, and extra fields on each route; health also returns service, per-check latencyMs and ts. The docs say errors are &#123;&quot;error&quot;: &#123;&quot;code&quot;, &quot;message&quot;&#125;&#125;; the live API instead returns error as a string code, with message, issues (validation details) or minAmount/maxAmount alongside: 400 `invalid_request` for missing parameters, 400 `amount_too_low` below the route minimum, 404 `no_route` for an unsupported pair. Unverified: the 429 `rate_limited` response body, the full value sets of estimatedTimeTier and providerName, whether a quote can return more than one route, and whether chat status model is null when AI is not configured.",
+      "Server time of the check, epoch milliseconds.",
+      "Service name; observed &quot;autopay&quot;.",
+      "Source coin network.",
+      "Source coin symbol.",
+      "Speed tier of the best route; observed &quot;fast&quot; and &quot;slow&quot;.",
+      "The chat status",
+      "The limits for the pair",
+      "The quote",
+      "The service health",
+      "The supported coins",
+      "Ticker symbol, for example &quot;BTC&quot;. Not always alphanumeric (&quot;10SET.&quot; was observed).",
+      "True for the route chosen as best.",
+      "Whether an AI model answers chat questions.",
+      "Whether curated fallback answers are available."
+    ]
+  }
+}

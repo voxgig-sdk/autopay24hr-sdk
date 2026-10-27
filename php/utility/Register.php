@@ -1,0 +1,72 @@
+<?php
+declare(strict_types=1);
+
+// Autopay24hr SDK utility registration
+
+require_once __DIR__ . '/../core/UtilityType.php';
+require_once __DIR__ . '/Clean.php';
+require_once __DIR__ . '/Done.php';
+require_once __DIR__ . '/MakeError.php';
+require_once __DIR__ . '/FeatureAdd.php';
+require_once __DIR__ . '/FeatureHook.php';
+require_once __DIR__ . '/FeatureInit.php';
+require_once __DIR__ . '/Fetcher.php';
+require_once __DIR__ . '/MakeFetchDef.php';
+require_once __DIR__ . '/MakeContext.php';
+require_once __DIR__ . '/MakeOptions.php';
+require_once __DIR__ . '/MakeRequest.php';
+require_once __DIR__ . '/MakeResponse.php';
+require_once __DIR__ . '/MakeResult.php';
+require_once __DIR__ . '/MakePoint.php';
+require_once __DIR__ . '/MakeSpec.php';
+require_once __DIR__ . '/MakeUrl.php';
+require_once __DIR__ . '/Param.php';
+require_once __DIR__ . '/PrepareAuth.php';
+require_once __DIR__ . '/PrepareBody.php';
+require_once __DIR__ . '/Graphql.php';
+require_once __DIR__ . '/PrepareHeaders.php';
+require_once __DIR__ . '/PrepareMethod.php';
+require_once __DIR__ . '/PrepareParams.php';
+require_once __DIR__ . '/PreparePath.php';
+require_once __DIR__ . '/PrepareQuery.php';
+require_once __DIR__ . '/ResultBasic.php';
+require_once __DIR__ . '/ResultBody.php';
+require_once __DIR__ . '/ResultHeaders.php';
+require_once __DIR__ . '/TransformRequest.php';
+require_once __DIR__ . '/TransformResponse.php';
+
+Autopay24hrUtility::setRegistrar(function (Autopay24hrUtility $u): void {
+    $u->clean = [Autopay24hrClean::class, 'call'];
+    $u->clean_add = [Autopay24hrClean::class, 'add'];
+    $u->clean_explain = [Autopay24hrDone::class, 'clean_explain'];
+    $u->done = [Autopay24hrDone::class, 'call'];
+    $u->make_error = [Autopay24hrMakeError::class, 'call'];
+    $u->feature_add = [Autopay24hrFeatureAdd::class, 'call'];
+    $u->feature_hook = [Autopay24hrFeatureHook::class, 'call'];
+    $u->feature_init = [Autopay24hrFeatureInit::class, 'call'];
+    $u->fetcher = [Autopay24hrFetcher::class, 'call'];
+    $u->make_fetch_def = [Autopay24hrMakeFetchDef::class, 'call'];
+    $u->make_context = [Autopay24hrMakeContext::class, 'call'];
+    $u->make_options = [Autopay24hrMakeOptions::class, 'call'];
+    $u->make_request = [Autopay24hrMakeRequest::class, 'call'];
+    $u->make_response = [Autopay24hrMakeResponse::class, 'call'];
+    $u->make_result = [Autopay24hrMakeResult::class, 'call'];
+    $u->make_point = [Autopay24hrMakePoint::class, 'call'];
+    $u->make_spec = [Autopay24hrMakeSpec::class, 'call'];
+    $u->make_url = [Autopay24hrMakeUrl::class, 'call'];
+    $u->param = [Autopay24hrParam::class, 'call'];
+    $u->prepare_auth = [Autopay24hrPrepareAuth::class, 'call'];
+    $u->prepare_body = [Autopay24hrPrepareBody::class, 'call'];
+    $u->prepare_headers = [Autopay24hrPrepareHeaders::class, 'call'];
+    $u->prepare_method = [Autopay24hrPrepareMethod::class, 'call'];
+    $u->prepare_params = [Autopay24hrPrepareParams::class, 'call'];
+    $u->prepare_path = [Autopay24hrPreparePath::class, 'call'];
+    $u->prepare_query = [Autopay24hrPrepareQuery::class, 'call'];
+    $u->graphql_body = [Autopay24hrGraphql::class, 'body'];
+    $u->graphql_errors = [Autopay24hrGraphql::class, 'errors'];
+    $u->result_basic = [Autopay24hrResultBasic::class, 'call'];
+    $u->result_body = [Autopay24hrResultBody::class, 'call'];
+    $u->result_headers = [Autopay24hrResultHeaders::class, 'call'];
+    $u->transform_request = [Autopay24hrTransformRequest::class, 'call'];
+    $u->transform_response = [Autopay24hrTransformResponse::class, 'call'];
+});

@@ -1,0 +1,636 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AutoPay24hr API",
+    "version": "1.0.0",
+    "description": "Public, keyless JSON API of AutoPay24hr, a non-KYC crypto swap service. CORS open, HTTPS only. Knowledge source: the documentation page https://autopay24hr.com/api-docs, with every endpoint below probed live on 2026-10-25. This spec deliberately covers only the read-only GET endpoints that work without creating anything: the coin list, pair limits, quotes, chat status and the health check. Left out on purpose: POST /api/v1/order (creates a real swap order with a deposit address), GET /api/v1/order/{id} (needs an order id that only a create returns), POST /api/v1/chat and the WebSocket /ws/order/{id}. Rate limit: anonymous callers get 60 requests per minute per IP (documented, and confirmed by x-ratelimit-limit: 60 / x-ratelimit-reset: 60 response headers). Observed but not documented: pair-limits also returns minNetReceive; quotes also return savePercentVsWorst, minAmount, maxAmount, isEstimate, estimatedTimeTier, cachedAt and expiresAt (epoch milliseconds, quotes are cached for 120 s), a routes array, targetNetToAmount in receive mode, and extra fields on each route; health also returns service, per-check latencyMs and ts. The docs say errors are {\"error\": {\"code\", \"message\"}}; the live API instead returns error as a string code, with message, issues (validation details) or minAmount/maxAmount alongside: 400 invalid_request for missing parameters, 400 amount_too_low below the route minimum, 404 no_route for an unsupported pair. Unverified: the 429 rate_limited response body, the full value sets of estimatedTimeTier and providerName, whether a quote can return more than one route, and whether chat status model is null when AI is not configured.",
+    "contact": {
+      "url": "https://autopay24hr.com/api-docs"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://autopay24hr.com",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/api/v1/coins": {
+      "get": {
+        "summary": "List supported coins",
+        "description": "Every asset currently available for swapping, one entry per symbol and network pair (the same symbol appears once per network, e.g. USDT on ethereum, tron, solana and others). About 170 KB; 2316 entries on 2026-10-25.",
+        "operationId": "listCoins",
+        "responses": {
+          "200": {
+            "description": "The supported coins.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "description": "Number of entries in coins."
+                    },
+                    "coins": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Coin"
+                      }
+                    }
+                  },
+                  "required": [
+                    "count",
+                    "coins"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pair-limits": {
+      "get": {
+        "summary": "Get pair limits",
+        "description": "Minimum and maximum send amount for a swap pair, with approximate USD bounds. All four parameters are required (400 invalid_request otherwise); an unsupported pair returns 404 no_route.",
+        "operationId": "getPairLimit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FromSymbol"
+          },
+          {
+            "$ref": "#/components/parameters/FromNetwork"
+          },
+          {
+            "$ref": "#/components/parameters/ToSymbol"
+          },
+          {
+            "$ref": "#/components/parameters/ToNetwork"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The limits for the pair.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PairLimit"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A required parameter is missing (error invalid_request, with issues).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No route can handle this pair (error no_route).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/quote": {
+      "get": {
+        "summary": "Get the best quote",
+        "description": "A live quote for a pair and amount. In send mode (the default) fromAmount is the amount sent and is required; in receive mode (amountMode=receive) toAmount is the net amount wanted, fromAmount is ignored and the response fromAmount is the amount to send. Quotes are cached for 120 s (see cachedAt and expiresAt). Creates nothing.",
+        "operationId": "getQuote",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FromSymbol"
+          },
+          {
+            "$ref": "#/components/parameters/FromNetwork"
+          },
+          {
+            "$ref": "#/components/parameters/ToSymbol"
+          },
+          {
+            "$ref": "#/components/parameters/ToNetwork"
+          },
+          {
+            "name": "fromAmount",
+            "in": "query",
+            "required": true,
+            "description": "Amount to send, in units of the source coin. Required in send mode (omitting it returns 400 invalid_request); ignored in receive mode. Below the route minimum returns 400 amount_too_low.",
+            "schema": {
+              "type": "number"
+            },
+            "example": 0.1
+          },
+          {
+            "name": "toAmount",
+            "in": "query",
+            "required": false,
+            "description": "Net amount of the destination coin wanted. Used only with amountMode=receive; ignored in send mode.",
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          },
+          {
+            "name": "amountMode",
+            "in": "query",
+            "required": false,
+            "description": "send locks the amount sent (fromAmount); receive locks the amount received (toAmount).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "send",
+                "receive"
+              ],
+              "default": "send"
+            },
+            "example": "send"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The quote.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quote"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request (error invalid_request, with issues) or amount out of range (error amount_too_low with minAmount and maxAmount).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No route can handle this pair (error no_route).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/chat/status": {
+      "get": {
+        "summary": "Get chat support status",
+        "description": "Whether the AI support chat is configured on this deployment.",
+        "operationId": "getChatStatus",
+        "responses": {
+          "200": {
+            "description": "The chat status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Health check",
+        "description": "Lightweight probe used by status pages and load balancers. Note the path is outside /api/v1.",
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "The service health.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "FromSymbol": {
+        "name": "fromSymbol",
+        "in": "query",
+        "required": true,
+        "description": "Symbol of the coin to send, as in Coin.symbol.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "BTC"
+      },
+      "FromNetwork": {
+        "name": "fromNetwork",
+        "in": "query",
+        "required": true,
+        "description": "Network of the coin to send, as in Coin.network.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "bitcoin"
+      },
+      "ToSymbol": {
+        "name": "toSymbol",
+        "in": "query",
+        "required": true,
+        "description": "Symbol of the coin to receive, as in Coin.symbol.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "ETH"
+      },
+      "ToNetwork": {
+        "name": "toNetwork",
+        "in": "query",
+        "required": true,
+        "description": "Network of the coin to receive, as in Coin.network.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "ethereum"
+      }
+    },
+    "schemas": {
+      "Coin": {
+        "type": "object",
+        "description": "A supported asset on one network.",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Ticker symbol, e.g. \"BTC\". Not always alphanumeric (\"10SET.\" was observed)."
+          },
+          "network": {
+            "type": "string",
+            "description": "Network slug, e.g. \"bitcoin\", \"ethereum\", \"tron\", \"solana\", \"bsc\"."
+          },
+          "decimals": {
+            "type": "integer",
+            "description": "Decimal places of the asset on this network."
+          },
+          "providers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Providers that route this asset; only \"autopay\" was observed."
+          }
+        },
+        "required": [
+          "symbol",
+          "network",
+          "decimals",
+          "providers"
+        ]
+      },
+      "PairLimit": {
+        "type": "object",
+        "description": "Send-amount limits for a swap pair. Amounts are in units of the source coin unless stated.",
+        "properties": {
+          "fromSymbol": {
+            "type": "string",
+            "description": "Source coin symbol."
+          },
+          "fromNetwork": {
+            "type": "string",
+            "description": "Source coin network."
+          },
+          "minAmount": {
+            "type": "number",
+            "description": "Minimum send amount."
+          },
+          "maxAmount": {
+            "type": "number",
+            "description": "Maximum send amount."
+          },
+          "minNetReceive": {
+            "type": "number",
+            "description": "Net amount of the destination coin received at the minimum send amount (undocumented)."
+          },
+          "minUsdApprox": {
+            "type": "number",
+            "description": "Approximate USD value of minAmount."
+          },
+          "maxUsdApprox": {
+            "type": "number",
+            "description": "Approximate USD value of maxAmount."
+          }
+        },
+        "required": [
+          "fromSymbol",
+          "fromNetwork",
+          "minAmount",
+          "maxAmount",
+          "minUsdApprox",
+          "maxUsdApprox"
+        ]
+      },
+      "Route": {
+        "type": "object",
+        "description": "One provider route priced for the requested amount.",
+        "properties": {
+          "providerName": {
+            "type": "string",
+            "description": "Route (provider) name; only \"AutoPay Instant\" was observed."
+          },
+          "fromAmount": {
+            "type": "number",
+            "description": "Amount sent, in units of the source coin."
+          },
+          "grossToAmount": {
+            "type": "number",
+            "description": "Amount of the destination coin before the spread."
+          },
+          "netToAmount": {
+            "type": "number",
+            "description": "Amount of the destination coin the user receives."
+          },
+          "spreadPercent": {
+            "type": "number",
+            "description": "Spread applied by the route, in percent (observed 0 and 0.5)."
+          },
+          "estimatedTime": {
+            "type": "string",
+            "description": "Human-readable completion estimate, e.g. \"15–45 min\" (uses an en dash)."
+          },
+          "estimatedTimeTier": {
+            "type": "string",
+            "description": "Speed tier; observed \"fast\" and \"slow\". The full value set is unverified."
+          },
+          "networkFee": {
+            "type": "number",
+            "description": "Network fee charged by the route (observed 0)."
+          },
+          "providerFeePercent": {
+            "type": "number",
+            "description": "Provider fee in percent (observed 0)."
+          },
+          "minAmount": {
+            "type": "number",
+            "description": "Route minimum send amount, in units of the source coin."
+          },
+          "maxAmount": {
+            "type": "number",
+            "description": "Route maximum send amount, in units of the source coin."
+          },
+          "isBest": {
+            "type": "boolean",
+            "description": "True for the route chosen as best."
+          }
+        },
+        "required": [
+          "providerName",
+          "fromAmount",
+          "netToAmount",
+          "isBest"
+        ]
+      },
+      "Quote": {
+        "type": "object",
+        "description": "A live swap quote. Amounts are in coin units.",
+        "properties": {
+          "fromSymbol": {
+            "type": "string",
+            "description": "Source coin symbol."
+          },
+          "fromNetwork": {
+            "type": "string",
+            "description": "Source coin network."
+          },
+          "toSymbol": {
+            "type": "string",
+            "description": "Destination coin symbol."
+          },
+          "toNetwork": {
+            "type": "string",
+            "description": "Destination coin network."
+          },
+          "fromAmount": {
+            "type": "number",
+            "description": "Amount to send: the request fromAmount in send mode, computed in receive mode."
+          },
+          "savePercentVsWorst": {
+            "type": "number",
+            "description": "Saving of the best route against the worst, in percent (observed 0)."
+          },
+          "amountMode": {
+            "type": "string",
+            "enum": [
+              "send",
+              "receive"
+            ],
+            "description": "The amount mode used."
+          },
+          "targetNetToAmount": {
+            "type": "number",
+            "description": "The requested net receive amount; present only in receive mode."
+          },
+          "minAmount": {
+            "type": "number",
+            "description": "Minimum send amount for the pair."
+          },
+          "maxAmount": {
+            "type": "number",
+            "description": "Maximum send amount for the pair."
+          },
+          "isEstimate": {
+            "type": "boolean",
+            "description": "True when the quote is an estimate (observed true for BTC to ETH, false for USDT to SOL)."
+          },
+          "estimatedTimeTier": {
+            "type": "string",
+            "description": "Speed tier of the best route; observed \"fast\" and \"slow\"."
+          },
+          "cachedAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "When the quote was computed, epoch milliseconds."
+          },
+          "expiresAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "When the quote expires, epoch milliseconds (observed cachedAt + 120000)."
+          },
+          "best": {
+            "$ref": "#/components/schemas/Route"
+          },
+          "routes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Route"
+            },
+            "description": "All priced routes; one was observed."
+          }
+        },
+        "required": [
+          "fromSymbol",
+          "fromNetwork",
+          "toSymbol",
+          "toNetwork",
+          "fromAmount",
+          "amountMode",
+          "best",
+          "routes"
+        ]
+      },
+      "ChatStatus": {
+        "type": "object",
+        "description": "Configuration of the support chat.",
+        "properties": {
+          "aiConfigured": {
+            "type": "boolean",
+            "description": "Whether an AI model answers chat questions."
+          },
+          "fallbackAvailable": {
+            "type": "boolean",
+            "description": "Whether curated fallback answers are available."
+          },
+          "model": {
+            "type": "string",
+            "nullable": true,
+            "description": "AI model in use, e.g. \"anthropic/claude-haiku-4.5\". Nullability when AI is off is unverified."
+          }
+        },
+        "required": [
+          "aiConfigured",
+          "fallbackAvailable"
+        ]
+      },
+      "DependencyCheck": {
+        "type": "object",
+        "description": "Health of one backing service.",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "description": "Whether the service is healthy."
+          },
+          "latencyMs": {
+            "type": "number",
+            "description": "Check latency in milliseconds."
+          }
+        },
+        "required": [
+          "ok"
+        ]
+      },
+      "Health": {
+        "type": "object",
+        "description": "Service health.",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "description": "Overall health."
+          },
+          "status": {
+            "type": "string",
+            "description": "Overall status; observed \"ok\"."
+          },
+          "service": {
+            "type": "string",
+            "description": "Service name; observed \"autopay\"."
+          },
+          "checks": {
+            "type": "object",
+            "description": "Per-dependency checks.",
+            "properties": {
+              "db": {
+                "$ref": "#/components/schemas/DependencyCheck"
+              },
+              "redis": {
+                "$ref": "#/components/schemas/DependencyCheck"
+              }
+            }
+          },
+          "ts": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Server time of the check, epoch milliseconds."
+          }
+        },
+        "required": [
+          "ok",
+          "status"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "description": "Error body. error is a string code (not the nested object the docs show).",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error code, e.g. invalid_request, amount_too_low, no_route (documented also: invalid_pair, amount_too_high, route_unavailable, quote_expired, rate_limited)."
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable message (present on no_route)."
+          },
+          "issues": {
+            "type": "array",
+            "description": "Validation issues (present on invalid_request).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "Issue code, e.g. invalid_type."
+                },
+                "expected": {
+                  "type": "string",
+                  "description": "Expected type."
+                },
+                "received": {
+                  "type": "string",
+                  "description": "Received type."
+                },
+                "path": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Parameter path, e.g. [\"fromAmount\"]."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Issue message."
+                }
+              }
+            }
+          },
+          "minAmount": {
+            "type": "number",
+            "description": "Route minimum (present on amount_too_low)."
+          },
+          "maxAmount": {
+            "type": "number",
+            "description": "Route maximum (present on amount_too_low)."
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    }
+  }
+}

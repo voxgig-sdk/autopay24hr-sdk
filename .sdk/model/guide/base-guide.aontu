@@ -1,0 +1,42 @@
+# Generated from the API definition and overwritten on every build: do not
+# edit this file. Put customizations in the guide entry file, which includes
+# this one and overrides its defaults:
+#   guide.aontu
+
+guide: {
+  metrics: count: entity: 5
+  metrics: count: path: 5
+  metrics: count: method: 5
+
+  entity: chat_status: {
+    path: "/api/v1/chat/status": {
+      op: load: method: *GET
+    }
+  }
+
+  entity: coin: {
+    path: "/api/v1/coins": {
+      op: list: method: *GET
+      op: list: transform: res: *("`body.coins`")|top
+    }
+  }
+
+  entity: health: {
+    path: "/api/health": {
+      op: load: method: *GET
+    }
+  }
+
+  entity: pair_limit: {
+    path: "/api/v1/pair-limits": {
+      op: load: method: *GET
+    }
+  }
+
+  entity: quote: {
+    path: "/api/v1/quote": {
+      op: list: method: *GET
+    }
+  }
+
+}

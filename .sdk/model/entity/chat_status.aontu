@@ -1,0 +1,73 @@
+# Entity: chat_status
+
+main: kit: entity: chat_status: {
+
+  alias: field: {}
+
+  fields: {
+    aiConfigured: {
+      h: "Ai Configured"
+      n: "aiConfigured"
+      r: true
+      sh: "Whether an AI model answers chat questions."
+      t: "`$BOOLEAN`"
+    }
+    fallbackAvailable: {
+      h: "Fallback Available"
+      n: "fallbackAvailable"
+      r: true
+      sh: "Whether curated fallback answers are available."
+      t: "`$BOOLEAN`"
+    }
+    model: {
+      h: "Model"
+      n: "model"
+      r: false
+      sh: "AI model in use, e.g."
+      t: "`$STRING`"
+    }
+  }
+
+  name: "chat_status"
+  op: {
+    load: {
+      name: "load"
+      points: [
+        {
+          co: {
+            id: "GET /api/v1/chat/status"
+            source: "openapi3"
+            version: 2
+          }
+          m: "GET"
+          o: "/api/v1/chat/status"
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
+          s: [
+            {
+              lit: "api"
+            }
+            {
+              lit: "v1"
+            }
+            {
+              lit: "chat"
+            }
+            {
+              lit: "status"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body`"
+          }
+        }
+      ]
+    }
+  }
+
+
+
+}

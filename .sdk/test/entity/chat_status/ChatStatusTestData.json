@@ -1,0 +1,40 @@
+{
+  "existing": {
+    "chat_status": {
+      "CHAT_STATUS00": {
+        "aiConfigured": true,
+        "fallbackAvailable": false,
+        "model": "s20",
+        "id": "CHAT_STATUS00"
+      },
+      "CHAT_STATUS01": {
+        "aiConfigured": true,
+        "fallbackAvailable": false,
+        "model": "s3e",
+        "id": "CHAT_STATUS01"
+      },
+      "CHAT_STATUS02": {
+        "aiConfigured": true,
+        "fallbackAvailable": false,
+        "model": "s5c",
+        "id": "CHAT_STATUS02"
+      }
+    }
+  },
+  "new": {
+    "chat_status": {
+      "chat_status_ref01": {
+        "aiConfigured": true,
+        "fallbackAvailable": false,
+        "model": "s7a"
+      }
+    }
+  },
+  "requests": {
+    "GET /api/v1/chat/status": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

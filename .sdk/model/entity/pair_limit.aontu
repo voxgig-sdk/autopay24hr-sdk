@@ -1,0 +1,142 @@
+# Entity: pair_limit
+
+main: kit: entity: pair_limit: {
+
+  alias: field: {}
+
+  fields: {
+    fromNetwork: {
+      h: "From Network"
+      n: "fromNetwork"
+      r: true
+      sh: "Source coin network."
+      t: "`$STRING`"
+    }
+    fromSymbol: {
+      h: "From Symbol"
+      n: "fromSymbol"
+      r: true
+      sh: "Source coin symbol."
+      t: "`$STRING`"
+    }
+    maxAmount: {
+      h: "Max Amount"
+      n: "maxAmount"
+      r: true
+      sh: "Maximum send amount."
+      t: "`$NUMBER`"
+    }
+    maxUsdApprox: {
+      h: "Max Usd Approx"
+      n: "maxUsdApprox"
+      r: true
+      sh: "Approximate USD value of maxAmount."
+      t: "`$NUMBER`"
+    }
+    minAmount: {
+      h: "Min Amount"
+      n: "minAmount"
+      r: true
+      sh: "Minimum send amount."
+      t: "`$NUMBER`"
+    }
+    minNetReceive: {
+      h: "Min Net Receive"
+      n: "minNetReceive"
+      r: false
+      sh: "Net amount of the destination coin received at the minimum send amount (undocumented)."
+      t: "`$NUMBER`"
+    }
+    minUsdApprox: {
+      h: "Min Usd Approx"
+      n: "minUsdApprox"
+      r: true
+      sh: "Approximate USD value of minAmount."
+      t: "`$NUMBER`"
+    }
+  }
+
+  name: "pair_limit"
+  op: {
+    load: {
+      name: "load"
+      points: [
+        {
+          co: {
+            id: "GET /api/v1/pair-limits"
+            source: "openapi3"
+            version: 2
+          }
+          g: {
+            query: [
+              {
+                ex: "bitcoin"
+                k: "query"
+                n: "from_network"
+                or: "fromNetwork"
+                r: true
+                t: "`$STRING`"
+              }
+              {
+                ex: "BTC"
+                k: "query"
+                n: "from_symbol"
+                or: "fromSymbol"
+                r: true
+                t: "`$STRING`"
+              }
+              {
+                ex: "ethereum"
+                k: "query"
+                n: "to_network"
+                or: "toNetwork"
+                r: true
+                t: "`$STRING`"
+              }
+              {
+                ex: "ETH"
+                k: "query"
+                n: "to_symbol"
+                or: "toSymbol"
+                r: true
+                t: "`$STRING`"
+              }
+            ]
+          }
+          m: "GET"
+          o: "/api/v1/pair-limits"
+          q: {
+            exist: [
+              "from_network"
+              "from_symbol"
+              "to_network"
+              "to_symbol"
+            ]
+          }
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
+          s: [
+            {
+              lit: "api"
+            }
+            {
+              lit: "v1"
+            }
+            {
+              lit: "pair-limits"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body`"
+          }
+        }
+      ]
+    }
+  }
+
+
+
+}

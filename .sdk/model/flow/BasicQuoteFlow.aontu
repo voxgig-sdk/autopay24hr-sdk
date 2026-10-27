@@ -1,0 +1,22 @@
+# BasicQuoteFlow
+
+main: kit: flow: BasicQuoteFlow:
+{
+  entity: "quote",
+  kind: "basic",
+  name: "BasicQuoteFlow",
+  step: [
+    {
+      o: "list",
+      v: [
+        {
+          apply: "ItemExists",
+          def: {
+            ref: "quote_ref01"
+          }
+        }
+      ]
+    }
+  ],
+  "key$": "BasicQuoteFlow"
+}

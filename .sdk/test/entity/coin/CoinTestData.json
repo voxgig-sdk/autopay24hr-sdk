@@ -1,0 +1,41 @@
+{
+  "existing": {
+    "coin": {
+      "COIN00": {
+        "decimals": 40,
+        "network": "s29",
+        "providers": [],
+        "symbol": "s2b"
+      },
+      "COIN01": {
+        "decimals": 80,
+        "network": "s51",
+        "providers": [],
+        "symbol": "s53"
+      },
+      "COIN02": {
+        "decimals": 120,
+        "network": "s79",
+        "providers": [],
+        "symbol": "s7b"
+      }
+    }
+  },
+  "new": {
+    "coin": {
+      "coin_ref01": {
+        "decimals": 160,
+        "network": "sa1",
+        "providers": [],
+        "symbol": "sa3"
+      }
+    }
+  },
+  "requests": {
+    "GET /api/v1/coins": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

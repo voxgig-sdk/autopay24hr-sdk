@@ -1,0 +1,202 @@
+# Entity: quote
+
+main: kit: entity: quote: {
+
+  alias: field: {}
+
+  fields: {
+    estimatedTime: {
+      h: "Estimated Time"
+      n: "estimatedTime"
+      r: false
+      sh: "Human-readable completion estimate, e.g."
+      t: "`$STRING`"
+    }
+    estimatedTimeTier: {
+      h: "Estimated Time Tier"
+      n: "estimatedTimeTier"
+      r: false
+      sh: "Speed tier; observed \"fast\" and \"slow\"."
+      t: "`$STRING`"
+    }
+    fromAmount: {
+      h: "From Amount"
+      n: "fromAmount"
+      r: true
+      sh: "Amount sent, in units of the source coin."
+      t: "`$NUMBER`"
+    }
+    grossToAmount: {
+      h: "Gross To Amount"
+      n: "grossToAmount"
+      r: false
+      sh: "Amount of the destination coin before the spread."
+      t: "`$NUMBER`"
+    }
+    isBest: {
+      h: "Is Best"
+      n: "isBest"
+      r: true
+      sh: "True for the route chosen as best."
+      t: "`$BOOLEAN`"
+    }
+    maxAmount: {
+      h: "Max Amount"
+      n: "maxAmount"
+      r: false
+      sh: "Route maximum send amount, in units of the source coin."
+      t: "`$NUMBER`"
+    }
+    minAmount: {
+      h: "Min Amount"
+      n: "minAmount"
+      r: false
+      sh: "Route minimum send amount, in units of the source coin."
+      t: "`$NUMBER`"
+    }
+    netToAmount: {
+      h: "Net To Amount"
+      n: "netToAmount"
+      r: true
+      sh: "Amount of the destination coin the user receives."
+      t: "`$NUMBER`"
+    }
+    networkFee: {
+      h: "Network Fee"
+      n: "networkFee"
+      r: false
+      sh: "Network fee charged by the route (observed 0)."
+      t: "`$NUMBER`"
+    }
+    providerFeePercent: {
+      h: "Provider Fee Percent"
+      n: "providerFeePercent"
+      r: false
+      sh: "Provider fee in percent (observed 0)."
+      t: "`$NUMBER`"
+    }
+    providerName: {
+      h: "Provider Name"
+      n: "providerName"
+      r: true
+      sh: "Route (provider) name; only \"AutoPay Instant\" was observed."
+      t: "`$STRING`"
+    }
+    spreadPercent: {
+      h: "Spread Percent"
+      n: "spreadPercent"
+      r: false
+      sh: "Spread applied by the route, in percent (observed 0 and 0.5)."
+      t: "`$NUMBER`"
+    }
+  }
+
+  name: "quote"
+  op: {
+    list: {
+      name: "list"
+      points: [
+        {
+          co: {
+            id: "GET /api/v1/quote"
+            source: "openapi3"
+            version: 2
+          }
+          g: {
+            query: [
+              {
+                ex: "send"
+                k: "query"
+                n: "amount_mode"
+                or: "amountMode"
+                r: false
+                t: "`$STRING`"
+              }
+              {
+                ex: 0.1
+                k: "query"
+                n: "from_amount"
+                or: "fromAmount"
+                r: true
+                t: "`$NUMBER`"
+              }
+              {
+                ex: "bitcoin"
+                k: "query"
+                n: "from_network"
+                or: "fromNetwork"
+                r: true
+                t: "`$STRING`"
+              }
+              {
+                ex: "BTC"
+                k: "query"
+                n: "from_symbol"
+                or: "fromSymbol"
+                r: true
+                t: "`$STRING`"
+              }
+              {
+                ex: 1
+                k: "query"
+                n: "to_amount"
+                or: "toAmount"
+                r: false
+                t: "`$NUMBER`"
+              }
+              {
+                ex: "ethereum"
+                k: "query"
+                n: "to_network"
+                or: "toNetwork"
+                r: true
+                t: "`$STRING`"
+              }
+              {
+                ex: "ETH"
+                k: "query"
+                n: "to_symbol"
+                or: "toSymbol"
+                r: true
+                t: "`$STRING`"
+              }
+            ]
+          }
+          m: "GET"
+          o: "/api/v1/quote"
+          q: {
+            exist: [
+              "from_amount"
+              "from_network"
+              "from_symbol"
+              "to_network"
+              "to_symbol"
+            ]
+          }
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
+          s: [
+            {
+              lit: "api"
+            }
+            {
+              lit: "v1"
+            }
+            {
+              lit: "quote"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body`"
+          }
+        }
+      ]
+    }
+  }
+
+
+
+}

@@ -1,0 +1,48 @@
+{
+  "existing": {
+    "health": {
+      "HEALTH00": {
+        "checks": {},
+        "ok": false,
+        "service": "s34",
+        "status": "s35",
+        "ts": 54,
+        "id": "HEALTH00"
+      },
+      "HEALTH01": {
+        "checks": {},
+        "ok": false,
+        "service": "s66",
+        "status": "s67",
+        "ts": 104,
+        "id": "HEALTH01"
+      },
+      "HEALTH02": {
+        "checks": {},
+        "ok": false,
+        "service": "s98",
+        "status": "s99",
+        "ts": 154,
+        "id": "HEALTH02"
+      }
+    }
+  },
+  "new": {
+    "health": {
+      "health_ref01": {
+        "checks": {},
+        "ok": false,
+        "service": "sca",
+        "status": "scb",
+        "ts": 204
+      }
+    }
+  },
+  "requests": {
+    "GET /api/health": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}
